@@ -1,45 +1,20 @@
-from django.shortcuts import render, redirect, HttpResponse, HttpResponseRedirect
-from rest_framework.generics import GenericAPIView
-from rest_framework.mixins import ListModelMixin, CreateModelMixin, RetrieveModelMixin, UpdateModelMixin, DestroyModelMixin
-from serializers.serializers import UserSerializer
-from model.models import mUser
-
-# Seller views here.
-class CreateSeller(GenericAPIView, CreateModelMixin):
-    queryset = mUser.objects.all()
-    serializer_class = UserSerializer
-
-    def post(self, request, *args, **kwargs):
-        return self.create(request, *args, **kwargs)
+from django.shortcuts import render, redirect
+from django.http import HttpResponse, JsonResponse
+from rest_framework.decorators import api_view
+from django.contrib.auth.decorators import login_required
+from rest_framework.response import Response
+from .models import seller
+from .serializers import sellerSerializer
 
 
-class SellerList(GenericAPIView, ListModelMixin):
-    queryset = mUser.objects.filter(role="seller")
-    serializer_class = UserSerializer
-    
-    def get(self, request, *args, **kwargs):
-        return self.list(request, *args, **kwargs)
+@api_view(['GET'])
+def index(request):
+    return Response('This is buyer view',)
 
 
-class RetrieveSeller(GenericAPIView, RetrieveModelMixin):
-    queryset = mUser.objects.filter(role="seller")
-    serializer_class = UserSerializer
-
-    def get(self, request, *args, **kwargs):
-        return self.retrieve(request, *args, **kwargs)
-
-
-class UpdateSeller(GenericAPIView, UpdateModelMixin):
-    queryset = mUser.objects.filter(role="seller")
-    serializer_class = UserSerializer
-
-    def put(self, request, *args, **kwargs):
-        return self.update(request, *args, **kwargs)
-
-
-class DeleteSeller(GenericAPIView, DestroyModelMixin):
-    queryset = mUser.objects.filter(role="seller")
-    serializer_class = UserSerializer
-
-    def delete(self, request, *args, **kwargs):
-        return self.destroy(request, *args, **kwargs)
+@login_required
+@api_view(['GET'])
+def add(request):
+    sellers = seller.objects.all()
+    serialize = sellerSerializer(sellers, many=True)
+    return Response(serialize.data)
