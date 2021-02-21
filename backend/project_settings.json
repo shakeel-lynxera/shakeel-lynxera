@@ -1,0 +1,22 @@
+{
+  "data": {
+    "tokenProvider": {
+      "tokenExpiration": "100",
+      "tokenSecurityKey": "startrekkingacrosstheuniverseonthestarshipenterpriseundercaptainkirk",
+      "tokenSecurityAlgorithm": "HS256",
+      "tokenIssuer": "localhost",
+      "tokenAudience": "KwkDrop"
+    },
+    "connectionString": "Server=127.0.0.1;Port=5432;UserId=kwkdrop;Password=kwkdroppassword;Database=kwkdrop;",
+    "IsProduction": true,
+    "Debug": true,
+    "MAX_UPLOAD_SIZE": "5242880",
+    "AWSCredentials": {
+      "AWS_S3_ACCESS_KEY_ID": "AKIA34HBRWLHG434TFHR",
+      "AWS_S3_SECRET_ACCESS_KEY": "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",
+      "AWS_STORAGE_BUCKET_NAME": "kwkdrop",
+      "AWS_S3_REGION_NAME": "us-east-2",
+      "AWS_S3_HOST": "s3-us-east-2.amazonaws.com"
+    }
+  }
+}
