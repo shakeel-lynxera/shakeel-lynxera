@@ -2,9 +2,9 @@ from functools import wraps
 
 from django.views.decorators.csrf import csrf_exempt
 
-from Helper.Jwt import *
-from Handlers.ResponseHandler import *
-from Models.models import LogEntryForException
+from .jwt import *
+from .ResponseHandler import *
+from .models import LogEntryForException
 
 
 class RequestHandler:
@@ -26,9 +26,9 @@ class RequestHandler:
         return ip_address
 
     def _exception_log_entry(self, exception):
-        LogEntryForException.objects.create(Exception=exception, RequestUrl=self.requested_url,
-                                            UserAgent=self.user_agent,
-                                            IpAddress=self.ip_address)
+        LogEntryForException.objects.create(exception=exception, url=self.requested_url,
+                                            user_agent=self.user_agent,
+                                            ip_address=self.ip_address)
         return
 
 
@@ -56,6 +56,7 @@ class DecoratorHandler:
                             try:
                                 response = view(request, *args, **kwargs)
                             except Exception as e:
+                                print (e)
                                 request_handler._exception_log_entry(e)
                                 response = FailureResponse().return_response_object()
                         else:
@@ -64,6 +65,7 @@ class DecoratorHandler:
                         try:
                             response = view(request, *args, **kwargs)
                         except Exception as e:
+                            print (e)
                             request_handler._exception_log_entry(e)
                             response = FailureResponse().return_response_object()
                 else:

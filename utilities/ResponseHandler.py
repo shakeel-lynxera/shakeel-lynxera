@@ -2,23 +2,21 @@ import json
 
 from django.http import HttpResponse
 
-from Helper.Constants import *
+from .constants import *
 
 
 class SuccessResponse:
-    def __init__(self, data=None, is_error=False, message='', status_code=SUCCESS_RESPONSE_CODE):
+    def __init__(self, data=None, message='', status_code=SUCCESS_RESPONSE_CODE):
         if data is None:
             data = {}
         self.data = data
-        self.is_error = is_error
         self.message = message
         self.status_code = status_code
 
     def response_object(self):
         return {
             'data': self.data,
-            'error': self.is_error,
-            'message': self.message
+            'meta': {'status_code': self.status_code, 'message': self.message}
         }
 
     def return_response_object(self):
@@ -30,38 +28,37 @@ class SuccessResponse:
 
 
 class FailureResponse:
-    def __init__(self, message='Something Went Wrong', status_code=INTERNAL_SERVER_ERROR, is_error=True):
-        self.is_error = is_error
+    def __init__(self, message='Something Went Wrong', status_code=INTERNAL_SERVER_ERROR):
         self.message = message
         self.status_code = status_code
 
     def response_object(self):
         return {
             'data': {},
-            'error': self.is_error,
-            'message': self.message
+            'meta': {'status_code': self.status_code, 'message': self.message}
         }
 
     def response_object_bad_request(self):
         self.status_code = BAD_REQUEST_CODE
         return {
             'data': {},
-            'error': self.is_error,
-            'message': self.message
+            'meta': {'status_code': self.status_code, 'message': self.message}
         }
 
     def method_not_allowed(self):
+        self.status_code = METHOD_NOT_ALLOWED
         dict_ = {
             'data': {},
-            'error': True,
+            'status_code': METHOD_NOT_ALLOWED,
             'message': 'Method Not Allowed'
         }
         return respond(json.dumps(dict_), METHOD_NOT_ALLOWED)
 
     def unauthorized_object(self):
+        self.status_code = UNAUTHORIZED
         dict_ = {
             'data': {},
-            'error': True,
+            'status_code': UNAUTHORIZED,
             'message': 'Unauthorized User'
         }
         return respond(json.dumps(dict_), UNAUTHORIZED)

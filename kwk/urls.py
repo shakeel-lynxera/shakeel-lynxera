@@ -1,4 +1,3 @@
-#kwk URL Configuration
 from django.contrib import admin
 from django.urls import path, include
 from django.conf.urls.static import static
@@ -7,5 +6,5 @@ from kwk.settings import MEDIA_ROOT, MEDIA_URL
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('', include('bagger.urls')),
+    path('api/auth/', include('authModule.urls')),
 ] + static(MEDIA_URL, document_root=MEDIA_ROOT)
