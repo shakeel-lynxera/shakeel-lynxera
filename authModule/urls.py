@@ -7,4 +7,9 @@ from .views import *
 urlpatterns = [
     path('register/', register),
     path('login/', login),
+    path('register-buyer/', register_buyer),
+    path('send-verification-code-for-reset-password/', send_verification_code_for_reset_password),
+    path('validate-verification-code/', validate_verification_code_for_reset_password),
+    path('reset-password/', reset_password,),
+    path('register-driver/',register_driver),
 ] + static(MEDIA_URL, document_root=MEDIA_ROOT)

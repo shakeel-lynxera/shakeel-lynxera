@@ -44,7 +44,7 @@ class JWTClass:
         data_ = self.get_jwt_model(email, claims, roles, expiry_date)
         encoded_token = jwt.encode(data_, self.TokenProvider['tokenSecurityKey'],
                                    algorithm=self.TokenProvider['tokenSecurityAlgorithm'])
-        # encoded_token = encoded_token.decode('utf-8')
+        encoded_token = encoded_token.decode('utf-8')
         return encoded_token
 
     @staticmethod

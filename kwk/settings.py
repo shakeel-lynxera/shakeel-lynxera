@@ -94,14 +94,25 @@ MAX_UPLOAD_SIZE = Data['MAX_UPLOAD_SIZE']
 IS_PRODUCTION = Data['IsProduction']
 DEBUG = Data['Debug']
 
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.postgresql',
+#         'NAME': Database,
+#         'USER': UserId,
+#         'PASSWORD': Password,
+#         'HOST': HostName,
+#         'PORT': Port
+#     }
+# }
+
+#Testing Database
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': Database,
-        'USER': UserId,
-        'PASSWORD': Password,
-        'HOST': HostName,
-        'PORT': Port
+        'NAME': 'kwk',
+        'USER': 'postgres',
+        'PASSWORD':'admin',
+        'HOST':'localhost'
     }
 }
 
@@ -136,8 +147,6 @@ USE_L10N = True
 
 USE_TZ = True
 
-# JWT_SECRET_KEY
-JWT_SECRET_KEY = 'JWT_SECRET_KEYJWT_SECRET_KEYJWT_SECRET_KEYJWT_SECRET_KEY'
 
 # Email Settings
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'

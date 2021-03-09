@@ -8,6 +8,9 @@ class LogEntryForException(models.Model):
     exception = models.TextField(null=False, db_column='exception')
     created_at = models.DateTimeField(auto_now_add=True, db_column='created_at')
 
+    def __str__(self):
+        return self.exception
+
     class Meta:
         db_table = 'LogEntryForException'
 
@@ -15,6 +18,9 @@ class LogEntryForException(models.Model):
 class Role(models.Model):
     name = models.CharField(max_length=32, db_column='name')
     created_at = models.DateTimeField(auto_now_add=True, db_column='created_at')
+
+    def __str__(self):
+        return self.name
 
     class Meta:
         db_table = 'Role'
