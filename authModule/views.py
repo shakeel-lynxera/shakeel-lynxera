@@ -55,6 +55,119 @@ def login(request):
         return FailureResponse(message='Invalid username or password',
                                status_code=BAD_REQUEST_CODE).return_response_object()
 
+#Seller Registration
+@decorator_.rest_api_call(allowed_method_list=['POST'])
+def register_seller(request):
+    data = json.loads(request.body.decode('utf-8'))
+    email_ = data['email'].lower().strip()
+    password_ = data['password']
+    role_ = data['role'].upper().strip()
+    shop_name_ = data['shop_name']
+    phone_ = data['phone']
+    address_ = data['address']
+
+    #362 24/7 Always open in whole year
+    is_always_open_ = data['is_always_open']
+
+    #open and close shops duration per week
+    monday_is_24hours_ = data['monday_is_24hours']
+    monday_open_time_ = data['monday_open_time']
+    monday_close_time_ = data['monday_close_time']
+
+    tuesday_is_24hours_ = data['tuesday_is_24hours']
+    tuesday_open_time_ = data['tuesday_open_time']
+    tuesday_close_time_ = data['tuesday_close_time']
+
+    wednesday_is_24hours_ = data['wednesday_is_24hours']
+    wednesday_open_time_ = data['wednesday_open_time']
+    wednesday_close_time_ = data['wednesday_close_time']
+
+    thursday_is_24hours_ = data['thursday_is_24hours']
+    thursday_open_time_ = data['thursday_open_time']
+    thursday_close_time_ = data['thursday_close_time']
+
+    friday_is_24hours_ = data['friday_is_24hours']
+    friday_open_time_ = data['friday_open_time']
+    friday_close_time_ = data['friday_close_time']
+
+    saturday_is_24hours_ = data['saturday_is_24hours']
+    saturday_open_time_ = data['saturday_open_time']
+    saturday_close_time_ = data['saturday_close_time']
+
+    sunday_is_24hours_ = data['sunday_is_24hours']
+    sunday_open_time_ = data['sunday_open_time']
+    sunday_close_time_ = data['sunday_close_time']
+
+
+    if not Role.objects.filter(name=role_).exists() or role_.upper().strip() != "SELLER":
+        return FailureResponse(status_code=BAD_REQUEST_CODE, message='User role is not valid').return_response_object()
+
+    if User.objects.filter(email__iexact=email_).exists():
+        return FailureResponse(status_code=BAD_REQUEST_CODE, message='This email address already exists').return_response_object()
+    
+    if UserProfile.objects.filter(phone_number=phone_).exists():
+        return FailureResponse(status_code=BAD_REQUEST_CODE, message='This phone number already exists').return_response_object()
+
+
+    user_ = User.objects.create(email=email_, username=email_, first_name=shop_name_)
+    user_.set_password(password_)
+    user_.save()
+    profileObj_ = UserProfile.objects.create(name=shop_name_, user=user_, phone_number = phone_,address=address_, is_set_password=True)
+    roleObj_ = UserRole.objects.create(user=user_, role=Role.objects.get(name=role_))
+
+    shopHourObj = ShopHour.objects.create(is_always_open=is_always_open_, week=
+                                                        {
+                                                        'days':[
+                                                                {
+                                                                    'name':'monday',
+                                                                    'is_24hours':monday_is_24hours_,
+                                                                    'open_time':monday_open_time_,
+                                                                    'close_time':monday_close_time_, 
+                                                                },
+                                                                {
+                                                                    'name':'tuesday',
+                                                                    'is_24hours':tuesday_is_24hours_,
+                                                                    'open_time':tuesday_open_time_,
+                                                                    'close_time':tuesday_close_time_, 
+                                                                },
+                                                                {
+                                                                    'name':'wednesday',
+                                                                    'is_24hours':wednesday_is_24hours_,
+                                                                    'open_time':wednesday_open_time_,
+                                                                    'close_time':wednesday_close_time_, 
+                                                                },
+                                                                {
+                                                                    'name':'thursday',
+                                                                    'is_24hours':thursday_is_24hours_,
+                                                                    'open_time':thursday_open_time_,
+                                                                    'close_time':thursday_close_time_, 
+                                                                },
+                                                                {
+                                                                    'name':'friday',
+                                                                    'is_24hours':friday_is_24hours_,
+                                                                    'open_time':friday_open_time_,
+                                                                    'close_time':friday_close_time_, 
+                                                                },
+                                                                {
+                                                                    'name':'saturday',
+                                                                    'is_24hours':saturday_is_24hours_,
+                                                                    'open_time':saturday_open_time_,
+                                                                    'close_time':saturday_close_time_, 
+                                                                },
+                                                                {
+                                                                    'name':'sunday',
+                                                                    'is_24hours':sunday_is_24hours_,
+                                                                    'open_time':sunday_open_time_,
+                                                                    'close_time':sunday_close_time_, 
+                                                                },
+                                                                ]
+                                                        }
+    )
+    Seller.objects.create(user=user_, profile=profileObj_, role=roleObj_, shopHour=shopHourObj)
+    return SuccessResponse(message='Seller is successfully created').return_response_object()
+
+
+
 #Driver Registration
 @decorator_.rest_api_call(allowed_method_list=['POST'])
 def register_driver(request):
@@ -116,6 +229,7 @@ def register_buyer(request):
     email = data['email'].lower().strip()
     role = data['role'].upper().strip()
     address = data['address']
+    password = data['password']
 
     if not Role.objects.filter(name=role).exists() or role.upper().strip() != "BUYER":
         return FailureResponse(status_code=BAD_REQUEST_CODE, message='User role is not valid').return_response_object()
@@ -124,15 +238,14 @@ def register_buyer(request):
         return FailureResponse(status_code=BAD_REQUEST_CODE, message='This email address already exists').return_response_object()
 
     user_ = User.objects.create(email=email, username=email)
-    generateRandomPassword = ''.join(random.choice(string.ascii_uppercase) for _ in range(10))
-    user_.set_password('generateRandomPassword')
+    user_.set_password(password)
     user_.save()
 
-    UserProfile.objects.create(user=user_, address=address, is_set_password=False)
+    UserProfile.objects.create(user=user_, address=address, is_set_password=True)
     UserRole.objects.create(user=user_, role=Role.objects.get(name=role))
 
     #Directly login
-    user = authenticate(username=email, password='generateRandomPassword')
+    user = authenticate(username=email, password=password)
     if user:
         token = jwt_.create_user_session(user)
         return SuccessResponse(data={'token': token}).return_response_object()

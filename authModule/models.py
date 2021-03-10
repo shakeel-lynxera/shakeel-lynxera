@@ -2,6 +2,8 @@ from django.db import models
 from django.contrib.auth.models import User
 from utilities.models import Role
 from django.utils.timezone import datetime
+from django.contrib.postgres.fields import JSONField
+
 
 class UserProfile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE, null=False, db_column='user')
@@ -49,6 +51,9 @@ class Vehicle(models.Model):
     vehicle_number = models.TextField(default='', db_column='vehicle_number')
     vehicle_color = models.TextField(default='', db_column='vehicle_color')
 
+    class Meta:
+        db_table = 'Vehicle'
+
 
 class Driver(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE, null=False, db_column='user')
@@ -58,4 +63,28 @@ class Driver(models.Model):
     vehicle = models.OneToOneField(Vehicle, on_delete=models.CASCADE, null=False, db_column='vehicle')
     social_security_number = models.BigIntegerField(default=0, db_column='social_security_number')
 
+    class Meta:
+        db_table = 'Driver'
 
+
+class ShopHour(models.Model):
+    week = JSONField()
+    is_always_open = models.BooleanField(default=False, db_column='is_always_open')
+
+    class Meta:
+        db_table = 'ShopHour'
+    # day = models.TextField(default='', db_column='day')
+    # open_time = models.TextField(default='', db_column='open_time')
+    # close_time = models.TextField(default='', db_column='close_time')
+    # is_24hours_open = models.BooleanField(default=False, db_column='is_24hours_open')
+
+
+
+class Seller(models.Model):
+    user = models.OneToOneField(User, on_delete=models.CASCADE, null=False, db_column='user')
+    profile = models.OneToOneField(UserProfile, on_delete=models.CASCADE, null=False, db_column='profile')
+    role = models.OneToOneField(UserRole, on_delete=models.CASCADE, null=False, db_column='role')
+    shopHour = models.OneToOneField(ShopHour, on_delete=models.CASCADE, null=False, db_column='shopHour')
+
+    class Meta:
+        db_table = 'Seller'
