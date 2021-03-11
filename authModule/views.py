@@ -24,7 +24,11 @@ def register(request):
     try:
         data = json.loads(request.body.decode('utf-8'))
     except:
-        data = json.loads(request.body.decode())
+        try:
+            data = json.loads(request.body.decode())
+        except:
+            data = request.POST
+
     email = data['email'].lower().strip()
     password = data['password']
     role = data['role'].upper().strip()
@@ -49,7 +53,11 @@ def login(request):
     try:
         data = json.loads(request.body.decode('utf-8'))
     except:
-        data = json.loads(request.body.decode())
+        try:
+            data = json.loads(request.body.decode())
+        except:
+            data = request.POST
+
     email = data['email'].lower().strip()
     password = data['password']
 
@@ -68,7 +76,11 @@ def register_seller(request):
     try:
         data = json.loads(request.body.decode('utf-8'))
     except:
-        data = json.loads(request.body.decode())
+        try:
+            data = json.loads(request.body.decode())
+        except:
+            data = request.POST
+
     email_ = data['email'].lower().strip()
     password_ = data['password']
     role_ = data['role'].upper().strip()
@@ -189,7 +201,11 @@ def register_driver(request):
     try:
         data = json.loads(request.body.decode('utf-8'))
     except:
-        data = json.loads(request.body.decode())
+        try:
+            data = json.loads(request.body.decode())
+        except:
+            data = request.POST
+
     email_ = data['email'].lower().strip()
     password_ = data['password']
     role_ = data['role'].upper().strip()
@@ -246,7 +262,11 @@ def register_buyer(request):
     try:
         data = json.loads(request.body.decode('utf-8'))
     except:
-        data = json.loads(request.body.decode())
+        try:
+            data = json.loads(request.body.decode())
+        except:
+            data = request.POST
+
     email = data['email'].lower().strip()
     role = data['role'].upper().strip()
     address = data['address']
@@ -279,7 +299,11 @@ def send_verification_code_for_reset_password(request):
     try:
         data = json.loads(request.body.decode('utf-8'))
     except:
-        data = json.loads(request.body.decode())
+        try:
+            data = json.loads(request.body.decode())
+        except:
+            data = request.POST
+
     email = data['email'].lower().strip()
 
     if User.objects.filter(email__iexact=email).exists():
@@ -328,7 +352,11 @@ def validate_verification_code_for_reset_password(request):
     try:
         data = json.loads(request.body.decode('utf-8'))
     except:
-        data = json.loads(request.body.decode())
+        try:
+            data = json.loads(request.body.decode())
+        except:
+            data = request.POST
+
     verification_code = str(data['verification_code'])
     if ResetPassword.objects.filter(verification_code__iexact=verification_code).exists():
         mObject = ResetPassword.objects.get(verification_code = verification_code)
@@ -343,7 +371,11 @@ def reset_password(request):
     try:
         data = json.loads(request.body.decode('utf-8'))
     except:
-        data = json.loads(request.body.decode())
+        try:
+            data = json.loads(request.body.decode())
+        except:
+            data = request.POST
+
     email = data['email']
     password = data['password']
     timeNow = dt.datetime.strftime(dt.datetime.now(), "%Y-%m-%d %H:%M:%S")
