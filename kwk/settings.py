@@ -92,27 +92,27 @@ IS_PRODUCTION = Data['IsProduction']
 DEBUG = Data['Debug']
 
 #Online Database
-# DATABASES = {
-#     'default': {
-#         'ENGINE': 'django.db.backends.postgresql',
-#         'NAME': Database,
-#         'USER': UserId,
-#         'PASSWORD': Password,
-#         'HOST': HostName,
-#         'PORT': Port
-#     }
-# }
-
-# Testing Database
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'kwk',
-        'USER': 'postgres',
-        'PASSWORD':'admin',
-        'HOST':'localhost'
+        'NAME': Database,
+        'USER': UserId,
+        'PASSWORD': Password,
+        'HOST': HostName,
+        'PORT': Port
     }
 }
+
+# Testing Database
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.postgresql',
+#         'NAME': 'kwk',
+#         'USER': 'postgres',
+#         'PASSWORD':'admin',
+#         'HOST':'localhost'
+#     }
+# }
 
 # Password validation
 # https://docs.djangoproject.com/en/3.0/ref/settings/#auth-password-validators
