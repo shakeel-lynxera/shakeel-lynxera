@@ -2,7 +2,7 @@ from django.db import models
 from django.contrib.auth.models import User
 from utilities.models import Role
 from django.utils.timezone import datetime
-from django.contrib.postgres.fields import JSONField
+# from django.contrib.postgres.fields import JSONField
 
 
 class UserProfile(models.Model):
@@ -10,7 +10,7 @@ class UserProfile(models.Model):
     name = models.TextField(default='', db_column='name')
     address = models.TextField(default='', db_column='address')
     is_set_password = models.BooleanField(default=False, db_column='is_set_password')
-    phone_number = models.BigIntegerField(default=0, db_column='phone_number')
+    phone_number = models.TextField(default='', db_column='phone_number')
     date_of_birth = models.CharField(default='', max_length=15 ,db_column='date_of_birth')
     
     def __str__(self):
@@ -42,7 +42,7 @@ class ResetPassword(models.Model):
 
 class License(models.Model):
     license_state = models.TextField(default='', db_column='license_state')
-    license_number = models.BigIntegerField(default=0, db_column='license_number')
+    license_number = models.TextField(default='', db_column='license_number')
     license_exp_date = models.TextField(default='', db_column='license_exp_date')
 
 class Vehicle(models.Model):
@@ -61,18 +61,20 @@ class Driver(models.Model):
     role = models.OneToOneField(UserRole, on_delete=models.CASCADE, null=False, db_column='role')
     license = models.OneToOneField(License, on_delete=models.CASCADE, null=False, db_column='license')
     vehicle = models.OneToOneField(Vehicle, on_delete=models.CASCADE, null=False, db_column='vehicle')
-    social_security_number = models.BigIntegerField(default=0, db_column='social_security_number')
+    social_security_number = models.TextField(default='', db_column='social_security_number')
 
     class Meta:
         db_table = 'Driver'
 
 
 class ShopHour(models.Model):
-    week = JSONField()
+    open_time = models.TextField(default='', db_column='open_time')
+    close_time = models.TextField(default='', db_column='close_time')
     is_always_open = models.BooleanField(default=False, db_column='is_always_open')
 
     class Meta:
         db_table = 'ShopHour'
+    # week = JSONField()
     # day = models.TextField(default='', db_column='day')
     # open_time = models.TextField(default='', db_column='open_time')
     # close_time = models.TextField(default='', db_column='close_time')
