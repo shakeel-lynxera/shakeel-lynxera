@@ -20,7 +20,10 @@ jwt_ = JWTClass()
 
 @decorator_.rest_api_call(allowed_method_list=['POST'])
 def register(request):
-    data = json.loads(request.body.decode('utf-8'))
+    try:
+        data = json.loads(request.body.decode('utf-8'))
+    except:
+        data = json.loads(request.body.decode())
     email = data['email'].lower().strip()
     password = data['password']
     role = data['role'].upper().strip()
@@ -42,7 +45,10 @@ def register(request):
 
 @decorator_.rest_api_call(allowed_method_list=['POST'])
 def login(request):
-    data = json.loads(request.body.decode('utf-8'))
+    try:
+        data = json.loads(request.body.decode('utf-8'))
+    except:
+        data = json.loads(request.body.decode())
     email = data['email'].lower().strip()
     password = data['password']
 
@@ -58,7 +64,10 @@ def login(request):
 #Seller Registration
 @decorator_.rest_api_call(allowed_method_list=['POST'])
 def register_seller(request):
-    data = json.loads(request.body.decode('utf-8'))
+    try:
+        data = json.loads(request.body.decode('utf-8'))
+    except:
+        data = json.loads(request.body.decode())
     email_ = data['email'].lower().strip()
     password_ = data['password']
     role_ = data['role'].upper().strip()
@@ -171,7 +180,10 @@ def register_seller(request):
 #Driver Registration
 @decorator_.rest_api_call(allowed_method_list=['POST'])
 def register_driver(request):
-    data = json.loads(request.body.decode('utf-8'))
+    try:
+        data = json.loads(request.body.decode('utf-8'))
+    except:
+        data = json.loads(request.body.decode())
     email_ = data['email'].lower().strip()
     password_ = data['password']
     role_ = data['role'].upper().strip()
@@ -225,7 +237,10 @@ def register_driver(request):
 #Buyer Registration
 @decorator_.rest_api_call(allowed_method_list=['POST'])
 def register_buyer(request):
-    data = json.loads(request.body.decode('utf-8'))
+    try:
+        data = json.loads(request.body.decode('utf-8'))
+    except:
+        data = json.loads(request.body.decode())
     email = data['email'].lower().strip()
     role = data['role'].upper().strip()
     address = data['address']
@@ -255,7 +270,10 @@ def register_buyer(request):
 #Send verification code to Email for Reset Password
 @decorator_.rest_api_call(allowed_method_list=['POST'])
 def send_verification_code_for_reset_password(request):
-    data = json.loads(request.body.decode('utf-8'))
+    try:
+        data = json.loads(request.body.decode('utf-8'))
+    except:
+        data = json.loads(request.body.decode())
     email = data['email'].lower().strip()
 
     if User.objects.filter(email__iexact=email).exists():
@@ -301,7 +319,10 @@ def send_verification_code_for_reset_password(request):
 #Validate verification code for Reset Password
 @decorator_.rest_api_call(allowed_method_list=['POST'])
 def validate_verification_code_for_reset_password(request):
-    data = json.loads(request.body.decode('utf-8'))
+    try:
+        data = json.loads(request.body.decode('utf-8'))
+    except:
+        data = json.loads(request.body.decode())
     verification_code = str(data['verification_code'])
     if ResetPassword.objects.filter(verification_code__iexact=verification_code).exists():
         mObject = ResetPassword.objects.get(verification_code = verification_code)
@@ -313,7 +334,10 @@ def validate_verification_code_for_reset_password(request):
 #Reset Password
 @decorator_.rest_api_call(allowed_method_list=["POST"])
 def reset_password(request):
-    data = json.loads(request.body.decode('utf-8'))
+    try:
+        data = json.loads(request.body.decode('utf-8'))
+    except:
+        data = json.loads(request.body.decode())
     email = data['email']
     password = data['password']
     timeNow = dt.datetime.strftime(dt.datetime.now(), "%Y-%m-%d %H:%M:%S")
