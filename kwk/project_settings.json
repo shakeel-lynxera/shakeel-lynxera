@@ -7,7 +7,7 @@
       "tokenIssuer": "localhost",
       "tokenAudience": "KwkDrop"
     },
-    "connectionString": "Server=127.0.0.1;Port=5432;UserId=kwkdrop;Password=kwkdrop12345;Database=kwkdrop;",
+    "connectionString": "Server=127.0.0.1;Port=5432;UserId=kwk;Password=kwk12345;Database=kwk;",
     "IsProduction": true,
     "Debug": true,
     "MAX_UPLOAD_SIZE": "5242880",
