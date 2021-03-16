@@ -110,15 +110,17 @@ def check_seller_record(request):
     email_ = data['email'].lower().strip()
     password_ = data['password']
     role_ = data['role'].upper().strip()
-
-    if not Role.objects.filter(name=role_).exists() or role_.upper().strip() != "SELLER":
-        return FailureResponse(status_code=BAD_REQUEST_CODE, message='User role is not valid').return_response_object()
-    
-    user = authenticate(username=email_, password=password_)
-    if user:
-        return SuccessResponse(message='Password Matched').return_response_object()
+    if User.objects.filter(email__iexact=email_).exists():
+        if not Role.objects.filter(name=role_).exists() or role_.upper().strip() != "SELLER":
+            return FailureResponse(status_code=BAD_REQUEST_CODE, message='User role is not valid').return_response_object()
+        
+        user = authenticate(username=email_, password=password_)
+        if user:
+            return SuccessResponse(message='Password Matched').return_response_object()
+        else:
+            return FailureResponse(status_code=BAD_REQUEST_CODE, message='Password does not matched').return_response_object()
     else:
-        return FailureResponse(status_code=BAD_REQUEST_CODE, message='Password does not matched').return_response_object()
+        return SuccessResponse(message='New User').return_response_object()
 
 
 #Seller Registration
@@ -206,15 +208,17 @@ def check_driver_record(request):
     password_ = data['password']
     role_ = data['role'].upper().strip()
 
-    if not Role.objects.filter(name=role_).exists() or role_.upper().strip() != "DRIVER":
-        return FailureResponse(status_code=BAD_REQUEST_CODE, message='User role is not valid').return_response_object()
-    
-    user = authenticate(username=email_, password=password_)
-    if user:
-        return SuccessResponse(message='Password Matched').return_response_object()
+    if User.objects.filter(email__iexact=email_).exists():
+        if not Role.objects.filter(name=role_).exists() or role_.upper().strip() != "DRIVER":
+            return FailureResponse(status_code=BAD_REQUEST_CODE, message='User role is not valid').return_response_object()
+        
+        user = authenticate(username=email_, password=password_)
+        if user:
+            return SuccessResponse(message='Password Matched').return_response_object()
+        else:
+            return FailureResponse(status_code=BAD_REQUEST_CODE, message='Password does not matched').return_response_object()
     else:
-        return FailureResponse(status_code=BAD_REQUEST_CODE, message='Password does not matched').return_response_object()
-    
+        return SuccessResponse(message='New User Matched').return_response_object()
     
 
 #Driver Registration
