@@ -60,7 +60,7 @@ def login(request):
 
     email_ = data['email'].lower().strip()
     password_ = data['password']
-    role_ = data['role']
+    role_ = data['role'].upper().strip()
 
     if not Role.objects.filter(name=role_).exists():
         return FailureResponse(status_code=BAD_REQUEST_CODE, message='User role is not valid').return_response_object()
