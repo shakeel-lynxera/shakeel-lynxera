@@ -12,6 +12,8 @@ class UserProfile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE, null=False, db_column='user')
     name = models.TextField(default='', db_column='name')
     address = models.TextField(default='', db_column='address')
+    lat = models.TextField(default='', db_column='lat')
+    lng = models.TextField(default='', db_column='lng')
     phone_number = models.TextField(default='', db_column='phone_number')
     date_of_birth = models.CharField(default='', max_length=15 ,db_column='date_of_birth')
     is_seller = BooleanField(default=False, db_column='is_seller')
@@ -57,6 +59,8 @@ class Driver(models.Model):
     profile = models.ForeignKey(UserProfile, on_delete=models.CASCADE, null=False, db_column='profile')
     role = models.ForeignKey(UserRole, on_delete=models.CASCADE, null=False, db_column='role')
     social_security_number = models.TextField(default='', db_column='social_security_number')
+    lat = models.TextField(default='', db_column='lat')
+    lng = models.TextField(default='', db_column='lng')
 
     class Meta:
         db_table = 'Driver'
@@ -108,6 +112,8 @@ class Shop(models.Model):
     open_time = models.TextField(default='', db_column='open_time')
     close_time = models.TextField(default='', db_column='close_time')
     is_always_open = models.BooleanField(default=False, db_column='is_always_open')
+    lat = models.TextField(default='', db_column='lat')
+    lng = models.TextField(default='', db_column='lng')
     # week = JSONField()
     # day = models.TextField(default='', db_column='day')
     # open_time = models.TextField(default='', db_column='open_time')

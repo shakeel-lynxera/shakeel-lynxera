@@ -138,6 +138,8 @@ def register_seller(request):
     shop_name_ = data['shop_name']
     phone_ = data['phone']
     address_ = data['address']
+    lat_ = data['lat']
+    lng_ = data['lng']
 
     #362 24/7 Always open in whole year
     is_always_open_ = data['is_always_open']
@@ -168,7 +170,7 @@ def register_seller(request):
 
             roleObj_ = UserRole.objects.create(user=userObj_, role=Role.objects.get(name=role_))
             sellerObj_=Seller.objects.create(user=userObj_, profile=userProfileObj_, role=roleObj_)
-            Shop.objects.create(shop_address=address_,shop_name=shop_name_,is_always_open=is_always_open_,open_time=open_time_, close_time = close_time_, seller=sellerObj_)
+            Shop.objects.create(lat=lat_,lng=lng_, shop_address=address_,shop_name=shop_name_,is_always_open=is_always_open_,open_time=open_time_, close_time = close_time_, seller=sellerObj_)
         else:
             return FailureResponse(message='Invalid Password of previous selected role',
                                 status_code=BAD_REQUEST_CODE).return_response_object()
@@ -179,7 +181,7 @@ def register_seller(request):
         profileObj_ = UserProfile.objects.create(name=shop_name_, user=user_, phone_number = phone_,address=address_, is_seller=True)
         roleObj_ = UserRole.objects.create(user=user_, role=Role.objects.get(name=role_))
         sellerObj_=Seller.objects.create(user=user_, profile=profileObj_, role=roleObj_)
-        Shop.objects.create(is_always_open=is_always_open_,open_time=open_time_, close_time = close_time_, seller=sellerObj_)
+        Shop.objects.create(lat=lat_,lng=lng_, is_always_open=is_always_open_,open_time=open_time_, close_time = close_time_, seller=sellerObj_)
     user = authenticate(username=email_, password=password_)
     if user:
         token = jwt_.create_user_session(user)
@@ -234,6 +236,8 @@ def register_driver(request):
     address_ = data['address']
     dob_ = data['dob']
     social_security_number_ = data['social_security_number']
+    lat_ = data['lat']
+    lng_ = data['lng']
 
     vehicle_type_ = data['vehicle_type']
     vehicle_make_ = data['vehicle_make']
@@ -284,7 +288,7 @@ def register_driver(request):
             userProfileObj_.address=address_
             userProfileObj_.save()
             roleObj_ = UserRole.objects.create(user=userObj_, role=Role.objects.get(name=role_))
-            driverObj = Driver.objects.create(social_security_number=social_security_number_, user=userObj_, profile=userProfileObj_, role=roleObj_)
+            driverObj = Driver.objects.create(lat=lat_,lng=lng_,social_security_number=social_security_number_, user=userObj_, profile=userProfileObj_, role=roleObj_)
             License.objects.create(driver=driverObj, license_state=license_state_, license_number=license_number_, license_exp_date=license_exp_date_)
             Vehicle.objects.create(driver=driverObj, vehicle_type=vehicle_type_, vehicle_make=vehicle_make_, vehicle_number=vehicle_number_, vehicle_color=vehicle_color_)
             Bank_card_detail.objects.create(name_of_card=name_of_card,card_number=card_number, expiry_date=expiry_date, cvv_number=cvv_number, billing_address=billing_address, is_save=is_save, driver=driverObj)
@@ -297,7 +301,7 @@ def register_driver(request):
         userObj.save()
         profileObj_ = UserProfile.objects.create(name=name_, user=userObj, date_of_birth=dob_, phone_number = phone_,address=address_, is_driver=True)
         roleObj_ = UserRole.objects.create(user=userObj, role=Role.objects.get(name=role_))
-        driverObj = Driver.objects.create(social_security_number=social_security_number_, user=userObj, profile=profileObj_, role=roleObj_)
+        driverObj = Driver.objects.create(lat=lat_,lng=lng_,social_security_number=social_security_number_, user=userObj, profile=profileObj_, role=roleObj_)
         License.objects.create(driver=driverObj, license_state=license_state_, license_number=license_number_, license_exp_date=license_exp_date_)
         Vehicle.objects.create(driver=driverObj, vehicle_type=vehicle_type_, vehicle_make=vehicle_make_, vehicle_number=vehicle_number_, vehicle_color=vehicle_color_)
         Bank_card_detail.objects.create(name_of_card=name_of_card,card_number=card_number, expiry_date=expiry_date, cvv_number=cvv_number, billing_address=billing_address, is_save=is_save, driver=driverObj)
@@ -325,6 +329,8 @@ def register_buyer(request):
     role = data['role'].upper().strip()
     address = data['address']
     password = data['password']
+    lat = data['lat']
+    lng = data['lng']
 
     if not Role.objects.filter(name=role).exists() or role.upper().strip() != "BUYER":
         return FailureResponse(status_code=BAD_REQUEST_CODE, message='User role is not valid').return_response_object()
@@ -340,6 +346,8 @@ def register_buyer(request):
             userObj_ = User.objects.get(email=email)
             userProfileObj_=UserProfile.objects.get(user=userObj_)
             userProfileObj_.is_buyer=True
+            userProfileObj_.lat=lat
+            userProfileObj_.lng=lng
             userProfileObj_.save()
         else:
             return FailureResponse(message='Invalid Password of previous selected role',
@@ -348,7 +356,7 @@ def register_buyer(request):
         user_ = User.objects.create(email=email, username=email)
         user_.set_password(password)
         user_.save()
-        UserProfile.objects.create(user=user_, address=address, is_buyer=True)
+        UserProfile.objects.create(user=user_, address=address,lat=lat, lng=lng, is_buyer=True)
         UserRole.objects.create(user=user_, role=Role.objects.get(name=role))
 
     #Directly login
