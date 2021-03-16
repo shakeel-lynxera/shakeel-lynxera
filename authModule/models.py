@@ -39,6 +39,13 @@ class ResetPassword(models.Model):
     verification_code = models.CharField(default='', max_length=6, db_column='verification_code')
     key_expires = models.DateTimeField(default=datetime.now, db_column='key_expires')
 
+class PhoneNumbers(models.Model):
+    user = models.OneToOneField(User, on_delete=models.CASCADE, null=False ,db_column='user')
+    phone_number = models.CharField(default='', max_length=30, db_column='phone_number')
+    verification_code = models.CharField(default='', max_length=6, db_column='verification_code')
+    key_expires = models.DateTimeField(default=datetime.now, db_column='key_expires')
+    is_verified = models.BooleanField(default=False, db_column='is_verified')
+
     class Meta:
         db_table = 'ResetPassword'
 

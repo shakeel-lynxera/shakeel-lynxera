@@ -95,6 +95,32 @@ def login(request):
             return FailureResponse(message='Invalid username or password',
                                 status_code=BAD_REQUEST_CODE).return_response_object()
 
+
+#Check Seller
+@decorator_.rest_api_call(allowed_method_list=['POST'])
+def check_seller_record(request):
+    try:
+        data = json.loads(request.body.decode('utf-8'))
+    except:
+        try:
+            data = json.loads(request.body.decode())
+        except:
+            data = request.POST
+
+    email_ = data['email'].lower().strip()
+    password_ = data['password']
+    role_ = data['role'].upper().strip()
+
+    if not Role.objects.filter(name=role_).exists() or role_.upper().strip() != "SELLER":
+        return FailureResponse(status_code=BAD_REQUEST_CODE, message='User role is not valid').return_response_object()
+    
+    user = authenticate(username=email_, password=password_)
+    if user:
+        return SuccessResponse(message='Password Matched').return_response_object()
+    else:
+        return FailureResponse(status_code=BAD_REQUEST_CODE, message='Password does not matched').return_response_object()
+
+
 #Seller Registration
 @decorator_.rest_api_call(allowed_method_list=['POST'])
 def register_seller(request):
@@ -163,7 +189,31 @@ def register_seller(request):
         return FailureResponse(message='Invalid username or password',
                                 status_code=BAD_REQUEST_CODE).return_response_object()
 
-  
+#Check Driver
+@decorator_.rest_api_call(allowed_method_list=['POST'])
+def check_driver_record(request):
+    try:
+        data = json.loads(request.body.decode('utf-8'))
+    except:
+        try:
+            data = json.loads(request.body.decode())
+        except:
+            data = request.POST
+
+    email_ = data['email'].lower().strip()
+    password_ = data['password']
+    role_ = data['role'].upper().strip()
+
+    if not Role.objects.filter(name=role_).exists() or role_.upper().strip() != "DRIVER":
+        return FailureResponse(status_code=BAD_REQUEST_CODE, message='User role is not valid').return_response_object()
+    
+    user = authenticate(username=email_, password=password_)
+    if user:
+        return SuccessResponse(message='Password Matched').return_response_object()
+    else:
+        return FailureResponse(status_code=BAD_REQUEST_CODE, message='Password does not matched').return_response_object()
+    
+    
 
 #Driver Registration
 @decorator_.rest_api_call(allowed_method_list=['POST'])
@@ -193,6 +243,13 @@ def register_driver(request):
     license_state_ = data['license_state']
     license_number_ = data['license_number']
     license_exp_date_ = data['license_exp_date']
+
+    name_of_card = data['name_of_card']
+    card_number = data['card_number']
+    expiry_date = data['expiry_date']
+    cvv_number = data['cvv_number']
+    billing_address = data['billing_address']
+    is_save =data['is_save']
 
 
     if not Role.objects.filter(name=role_).exists() or role_.upper().strip() != "DRIVER":
@@ -230,6 +287,7 @@ def register_driver(request):
             driverObj = Driver.objects.create(social_security_number=social_security_number_, user=userObj_, profile=userProfileObj_, role=roleObj_)
             License.objects.create(driver=driverObj, license_state=license_state_, license_number=license_number_, license_exp_date=license_exp_date_)
             Vehicle.objects.create(driver=driverObj, vehicle_type=vehicle_type_, vehicle_make=vehicle_make_, vehicle_number=vehicle_number_, vehicle_color=vehicle_color_)
+            Bank_card_detail.objects.create(name_of_card=name_of_card,card_number=card_number, expiry_date=expiry_date, cvv_number=cvv_number, billing_address=billing_address, is_save=is_save, driver=driverObj)
         else:
             return FailureResponse(message='Invalid Password of previous selected role',
                                 status_code=BAD_REQUEST_CODE).return_response_object()
@@ -242,6 +300,7 @@ def register_driver(request):
         driverObj = Driver.objects.create(social_security_number=social_security_number_, user=userObj, profile=profileObj_, role=roleObj_)
         License.objects.create(driver=driverObj, license_state=license_state_, license_number=license_number_, license_exp_date=license_exp_date_)
         Vehicle.objects.create(driver=driverObj, vehicle_type=vehicle_type_, vehicle_make=vehicle_make_, vehicle_number=vehicle_number_, vehicle_color=vehicle_color_)
+        Bank_card_detail.objects.create(name_of_card=name_of_card,card_number=card_number, expiry_date=expiry_date, cvv_number=cvv_number, billing_address=billing_address, is_save=is_save, driver=driverObj)
 
     #Directly login
     user = authenticate(username=email_, password=password_)

@@ -11,6 +11,8 @@ urlpatterns = [
     path('send-verification-code-for-reset-password/', send_verification_code_for_reset_password),
     path('validate-verification-code/', validate_verification_code_for_reset_password),
     path('reset-password/', reset_password,),
+    path('check-driver-record/', check_driver_record),
     path('register-driver/',register_driver),
+    path('check-seller-record/', check_seller_record),
     path('register-seller/', register_seller),
 ] + static(MEDIA_URL, document_root=MEDIA_ROOT)
