@@ -14,6 +14,7 @@ class Vendor(models.Model):
     phone_number = TextField(default='', db_column='phone_number')
     company = TextField(default='', db_column='company')
     created_at = models.DateTimeField(auto_now_add=True, db_column='created_at')
+    shop = models.ForeignKey(Shop, null=True,on_delete=models.CASCADE, db_column='shop')
 
 
 class Shop_Product(models.Model):
