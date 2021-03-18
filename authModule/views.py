@@ -167,6 +167,7 @@ def register_seller(request):
             userObj_ = User.objects.get(email=email_)
             userProfileObj_=UserProfile.objects.get(user=userObj_)
             userProfileObj_.is_seller=True
+            userProfileObj_.is_buyer=True
             userProfileObj_.phone_number = phone_
             userProfileObj_.save()
 
@@ -180,10 +181,10 @@ def register_seller(request):
         user_ = User.objects.create(email=email_, username=email_, first_name=shop_name_)
         user_.set_password(password_)
         user_.save()
-        profileObj_ = UserProfile.objects.create(name=shop_name_, user=user_, phone_number = phone_,address=address_, is_seller=True)
+        profileObj_ = UserProfile.objects.create(name=shop_name_, user=user_, phone_number = phone_,address=address_, is_seller=True, is_buyer=True)
         roleObj_ = UserRole.objects.create(user=user_, role=Role.objects.get(name=role_))
         sellerObj_=Seller.objects.create(user=user_, profile=profileObj_, role=roleObj_)
-        Shop.objects.create(lat=lat_,lng=lng_, is_always_open=is_always_open_,open_time=open_time_, close_time = close_time_, seller=sellerObj_)
+        Shop.objects.create(lat=lat_,lng=lng_, shop_address=address_,shop_name=shop_name_ ,is_always_open=is_always_open_,open_time=open_time_, close_time = close_time_, seller=sellerObj_)
     user = authenticate(username=email_, password=password_)
     if user:
         token = jwt_.create_user_session(user)
@@ -287,6 +288,7 @@ def register_driver(request):
             userObj_ = User.objects.get(email__iexact=email_)
             userProfileObj_=UserProfile.objects.get(user=userObj_)
             userProfileObj_.is_driver=True
+            userProfileObj_.is_buyer=True
             userProfileObj_.name=name_
             userProfileObj_.phone_number = phone_
             userProfileObj_.address=address_
@@ -303,7 +305,7 @@ def register_driver(request):
         userObj = User.objects.create(email=email_, username=email_, first_name=name_)
         userObj.set_password(password_)
         userObj.save()
-        profileObj_ = UserProfile.objects.create(name=name_, user=userObj, date_of_birth=dob_, phone_number = phone_,address=address_, is_driver=True)
+        profileObj_ = UserProfile.objects.create(name=name_, user=userObj, date_of_birth=dob_, phone_number = phone_,address=address_, is_driver=True, is_buyer=True)
         roleObj_ = UserRole.objects.create(user=userObj, role=Role.objects.get(name=role_))
         driverObj = Driver.objects.create(lat=lat_,lng=lng_,social_security_number=social_security_number_, user=userObj, profile=profileObj_, role=roleObj_)
         License.objects.create(driver=driverObj, license_state=license_state_, license_number=license_number_, license_exp_date=license_exp_date_)
