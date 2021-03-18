@@ -57,23 +57,30 @@ class JWTClass:
         try:
             decoded_token = jwt.decode(token, self.TokenProvider['tokenSecurityKey'],
                                        algorithm=[self.TokenProvider['tokenSecurityAlgorithm']])
+            print(token,'-------------------Token')
+            print(decoded_token['emailaddress'],'----------------------Email')
+            
+            
             expiry_ = datetime.datetime.fromtimestamp(decoded_token['expiry'])
-
-            user_ = User.objects.filter(email__iexact=decoded_token['email']).last()
+            role = decoded_token['role'][0]['role']
+            user_ = User.objects.filter(email__iexact=decoded_token['emailaddress']).last()
 
 
             # if expiry_ > datetime.datetime.now():
-            us_ = UserSession.objects.filter(Specification=decoded_token['specification'], IsValid=True,
-                                             Expiry=expiry_).last()
-            if role_check:
-                if us_.UserRole in role_check:
-                    return self.response_user_id(us_)
-                elif us_.UserRole == 0:
-                    us_.UserRole = role_check[0]
-                    us_.save()
-                    return self.response_user_id(us_)
-            else:
-                return self.response_user_id(us_)
+            # us_ = UserSession.objects.filter(Specification=decoded_token['specification'], IsValid=True,
+            #                                  Expiry=expiry_).last()
+            # if role_check:
+            #     if us_.UserRole in role_check:
+            #         return self.response_user_id(us_)
+            #     elif us_.UserRole == 0:
+            #         us_.UserRole = role_check[0]
+            #         us_.save()
+            #         return self.response_user_id(us_)
+            # else:
+            #     return self.response_user_id(us_)
+
+            if user_:
+                return {'email': user_.email, 'role':role}
 
             return False
         except Exception as e:

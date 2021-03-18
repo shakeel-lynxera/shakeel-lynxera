@@ -49,6 +49,7 @@ class Shop_Product_Variant(models.Model):
     price = models.IntegerField(default=0, db_column='price')
     sale_price = models.IntegerField(default=0, db_column='sale_price')
     sku = models.TextField(default='', db_column='sku')
+    barcode = models.TextField(default='', db_column='barcode')
     quantity = models.IntegerField(default=0, db_column='quantity')
     shop_product = models.ForeignKey(Shop_Product, on_delete=models.CASCADE,  db_column='shop_product')
     created_at = models.DateTimeField(auto_now_add=True, db_column='created_at')

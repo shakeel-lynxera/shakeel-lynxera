@@ -24,3 +24,11 @@ class Role(models.Model):
 
     class Meta:
         db_table = 'Role'
+
+
+class Temp_Product_Barcode_Scanner(models.Model):
+    barcode = models.TextField(default='', db_column='barcode')
+    title = models.TextField(default='', db_column='title')
+    product_img = models.TextField(default='', db_column='product_img')
+    category = models.TextField(default='category', db_column='category')
+    type = models.TextField(default='', db_column='type')
