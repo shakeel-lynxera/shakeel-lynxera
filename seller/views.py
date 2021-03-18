@@ -2,6 +2,7 @@ from os import name
 from utilities.models import Temp_Product_Barcode_Scanner
 from utilities.RequestHandler import *
 from utilities.ResponseHandler import *
+from utilities.utils import get_request_obj
 from .models import *
 from django.contrib.auth import authenticate
 from utilities.jwt import JWTClass
@@ -52,13 +53,7 @@ def add_vendor(request):
 #Show Vendor
 @decorator_.rest_api_call(allowed_method_list=['POST'])
 def show_vendor(request):
-    try:
-        data = json.loads(request.body.decode('utf-8'))
-    except:
-        try:
-            data = json.loads(request.body.decode())
-        except:
-            data = request.POST
+    data = get_request_obj(request)
 
     for x in data.values():
         if x == "":
@@ -95,50 +90,33 @@ def show_vendor(request):
 
 
 #Get shops for current seller
-@decorator_.rest_api_call(allowed_method_list=['POST'])
+@decorator_.rest_api_call(allowed_method_list=['POST'], is_authenticated=True, authentication_level=SELLER_ROLE)
 def get_shop_seller_detais(request):
-    try:
-        data = json.loads(request.body.decode('utf-8'))
-    except:
-        try:
-            data = json.loads(request.body.decode())
-        except:
-            data = request.POST
+    data = get_request_obj(request)
 
     for x in data.values():
         if x == "":
             return FailureResponse(status_code=BAD_REQUEST_CODE, message="Please fill all the values").return_response_object()
-    
-    token_ = data['token']
 
-    jwtDecodeObject = jwt_.decode_jwt_token(token_)
-    email_ = jwtDecodeObject['email']
-    role_ = jwtDecodeObject['role']
+    userObj = request.user
 
-    if role_.upper().strip() != "SELLER":
-        return FailureResponse(status_code=BAD_REQUEST_CODE, message="User role is not valid").return_response_object()
+    if UserProfile.objects.filter(is_seller=True, user=userObj).exists():
+        sellerObj = Seller.objects.get(user=userObj)
+        shopsObjects = Shop.objects.filter(seller=sellerObj)
 
-    if User.objects.filter(email__iexact=email_).exists():
-        userObj = User.objects.get(email=email_)
-        if UserProfile.objects.filter(is_seller=True, user=userObj).exists():
-            sellerObj = Seller.objects.get(user=userObj)
-            shopsObjects = Shop.objects.filter(seller=sellerObj)
+        shops = []
+        for obj in shopsObjects:
+            dict_ = {
+                'id': obj.id,
+                'shop_name': obj.shop_name,
+                'shop_address': obj.shop_address,
+                'shop_image_link':"https://kwkdrop.s3-us-east-2.amazonaws.com/media/1_LK4H69l.jpg"
+            }
+            shops.append(dict_)
 
-            shops = []
-            for obj in shopsObjects:
-                dict_ = {
-                    'id': obj.id,
-                    'shop_name': obj.shop_name,
-                    'shop_address': obj.shop_address,
-                    'shop_image_link':"https://kwkdrop.s3-us-east-2.amazonaws.com/media/1_LK4H69l.jpg"
-                }
-                shops.append(dict_)
-
-            return SuccessResponse(data={'shops': shops}).return_response_object()
-        else:
-            return FailureResponse(status_code=BAD_REQUEST_CODE, message='Seller role not active').return_response_object()
+        return SuccessResponse(data={'shops': shops}).return_response_object()
     else:
-        return FailureResponse(status_code=BAD_REQUEST_CODE, message='This user does not exists').return_response_object()
+        return FailureResponse(status_code=BAD_REQUEST_CODE, message='Seller role not active').return_response_object()
 
 
 #Get the current login seller and shop details and also get the product category and type details
