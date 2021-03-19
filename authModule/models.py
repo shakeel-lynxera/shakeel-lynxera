@@ -19,9 +19,6 @@ class UserProfile(models.Model):
     is_seller = BooleanField(default=False, db_column='is_seller')
     is_buyer = BooleanField(default=False, db_column='is_buyer')
     is_driver = BooleanField(default=False, db_column='is_driver')
-    
-    def __str__(self):
-        return self.user.username
 
     class Meta:
         db_table = 'UserProfile'

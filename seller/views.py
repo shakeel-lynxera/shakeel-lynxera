@@ -1,4 +1,6 @@
 from os import name
+
+from django.core.checks import messages
 from utilities.models import Temp_Product_Barcode_Scanner
 from utilities.RequestHandler import *
 from utilities.ResponseHandler import *
@@ -69,7 +71,13 @@ def show_vendor(request):
             venderObjects = Vendor.objects.filter(shop=shopsObject)
             vendors = []
             for obj in venderObjects:
-                dict_ = {'id': obj.id, 'vendor name': obj.full_name, 'phone_number':obj.phone_number, 'email':obj.email_address, 'company':obj.company}
+                dict_ = {
+                        'id': obj.id,
+                        'vendor_name': obj.full_name,
+                        'phone_number':obj.phone_number,
+                        'email':obj.email_address,
+                        'company':obj.company
+                        }
                 vendors.append(dict_)
             return SuccessResponse(data={'vendors': vendors}).return_response_object()
         else:
@@ -85,7 +93,6 @@ def get_shop_seller_detais(request):
     userObj = request.user
 
     if UserProfile.objects.filter(is_seller=True, user=userObj).exists():
-        print("----------------------")
         sellerObj = Seller.objects.get(user=userObj)
         shopsObjects = Shop.objects.filter(seller=sellerObj)
 
@@ -124,7 +131,7 @@ def get_shop_seller_vendor_product_detais_for_add_product(request):
             venderObjects = Vendor.objects.filter(shop=shopsObject)
             vendors = []
             for obj in venderObjects:
-                dict_ = {'id': obj.id, 'vendor name': obj.full_name}
+                dict_ = {'id': obj.id, 'vendor_name': obj.full_name}
                 vendors.append(dict_)
             
             getAllProducts = Temp_Product_Barcode_Scanner.objects.all()
@@ -292,5 +299,39 @@ def get_products_scanning_barcode(request):
                 }
             products.append(product_dict_)
         return SuccessResponse(data={'products_details':products}).return_response_object()
+    else:
+        return FailureResponse(status_code=BAD_REQUEST_CODE, message='Seller role not active').return_response_object()
+
+
+#Quick Edit Shops Products
+@decorator_.rest_api_call(allowed_method_list=['POST'], is_authenticated=True, authentication_level=SELLER_ROLE)
+def quick_edit_shops_product(request):
+    data = get_request_obj(request)
+
+    for x in data.values():
+        if x == "":
+            return FailureResponse(status_code=BAD_REQUEST_CODE, message="Please fill all the values").return_response_object()
+    
+    is_active_ = data['is_active']
+    product_quantity_ = data['product_quantity']
+    shop_id_ = data['shop_id']
+    product_id_ = data['product_id']
+
+    userObj = request.user
+
+    if UserProfile.objects.filter(is_seller=True, user=userObj).exists():
+        sellerObj = Seller.objects.get(user=userObj)
+        if Shop.objects.filter(id=shop_id_, seller=sellerObj).exists():
+            shopsObject = Shop.objects.get(id=shop_id_)
+            if Shop_Product.objects.filter(shop=shopsObject, id=product_id_):
+                getProduct = Shop_Product.objects.get(id=product_id_)
+                getProduct.is_active = is_active_
+                getProduct.quantity = product_quantity_
+                getProduct.save()
+                return SuccessResponse(message="Product Updated Sucessfully").return_response_object()
+            else:
+                return FailureResponse(status_code=BAD_REQUEST_CODE, message='Product does not belongs to requested shop').return_response_object()
+        else:
+            return FailureResponse(status_code=BAD_REQUEST_CODE, message='Shop does not belongs to requested user').return_response_object()
     else:
         return FailureResponse(status_code=BAD_REQUEST_CODE, message='Seller role not active').return_response_object()

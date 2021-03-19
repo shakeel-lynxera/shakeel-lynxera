@@ -12,5 +12,6 @@ urlpatterns = [
     path('get-shop-seller-vendor-product-detais/', get_shop_seller_vendor_product_detais_for_add_product),
     path('add-product-in-shop/', Add_Product_in_shop),
     path('get-Product-for-shop/', Get_Product_for_shop),
-    path('get-products-scanning-barcode/',get_products_scanning_barcode)
+    path('get-products-scanning-barcode/',get_products_scanning_barcode),
+    path('quick-edit-shops-product/', quick_edit_shops_product)
 ] + static(MEDIA_URL, document_root=MEDIA_ROOT)
