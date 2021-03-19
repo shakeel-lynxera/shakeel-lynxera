@@ -81,11 +81,6 @@ def show_vendor(request):
 #Get shops for current seller
 @decorator_.rest_api_call(allowed_method_list=['POST'], is_authenticated=True, authentication_level=SELLER_ROLE)
 def get_shop_seller_detais(request):
-    data = get_request_obj(request)
-
-    for x in data.values():
-        if x == "":
-            return FailureResponse(status_code=BAD_REQUEST_CODE, message="Please fill all the values").return_response_object()
 
     userObj = request.user
 
@@ -267,5 +262,35 @@ def Get_Product_for_shop(request):
             return SuccessResponse(data={'products_details':products}).return_response_object()
         else:
             return FailureResponse(status_code=BAD_REQUEST_CODE, message='Shop does not belongs to requested user').return_response_object()
+    else:
+        return FailureResponse(status_code=BAD_REQUEST_CODE, message='Seller role not active').return_response_object()
+
+
+#Get Products scanning barcode
+@decorator_.rest_api_call(allowed_method_list=['POST'], is_authenticated=True, authentication_level=SELLER_ROLE)
+def get_products_scanning_barcode(request):
+    data = get_request_obj(request)
+
+    for x in data.values():
+        if x == "":
+            return FailureResponse(status_code=BAD_REQUEST_CODE, message="Please fill all the values").return_response_object()
+    
+    barcode_ = data['barcode']
+
+    userObj = request.user
+
+    if UserProfile.objects.filter(is_seller=True, user=userObj).exists():    
+        getAllProducts = Temp_Product_Barcode_Scanner.objects.filter(barcode=barcode_)
+        products = []
+        for productObj in getAllProducts:
+            product_dict_ = {
+                'product_barcode':productObj.barcode,
+                'product_title':productObj.title,
+                'product_image':productObj.product_img,
+                'product_category':productObj.category,
+                'product_type':productObj.type
+                }
+            products.append(product_dict_)
+        return SuccessResponse(data={'products_details':products}).return_response_object()
     else:
         return FailureResponse(status_code=BAD_REQUEST_CODE, message='Seller role not active').return_response_object()
