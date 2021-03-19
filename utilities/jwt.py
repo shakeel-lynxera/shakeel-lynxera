@@ -62,17 +62,17 @@ class JWTClass:
             role = decoded_token['role'][0]['role']
             user_ = User.objects.filter(email__iexact=decoded_token['emailaddress']).last()
 
-            if expiry_ > datetime.datetime.now():
-                return False
+            # if expiry_ > datetime.datetime.now():
+            #     return False
 
             if user_:
                 if role_check:
                     role = role.upper()
 
                     if role in role_check:
-                        return {'email': user_.email, 'role':role}
+                        return user_
                 else:
-                    return {'email': user_.email, 'role': role}
+                    return {'invalid role defined'}
 
             return False
         except Exception as e:
