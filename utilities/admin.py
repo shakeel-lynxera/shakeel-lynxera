@@ -4,7 +4,7 @@ from utilities.models import *
 # Register your models here.
 
 class TempProductBarcodeScannerAttributes(admin.ModelAdmin):
-    list_display = ('barcode', 'title', 'product_img', 'category', 'type')
+    list_display = ('id','barcode', 'title', 'product_img', 'category', 'type')
 
 admin.site.register(Role)
 admin.site.register(LogEntryForException)
