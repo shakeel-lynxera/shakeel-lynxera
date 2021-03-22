@@ -258,6 +258,7 @@ def Get_Product_for_shop(request):
             for productObj in getAllProducts:
                 productCategoryObj = Shop_Product_Category.objects.get(shop_product=productObj)
                 product_dict_ = {
+                                    'id':productObj.id,
                                     'title':productObj.title,
                                     'price':productObj.price,
                                     'category':productCategoryObj.name,
